@@ -10,6 +10,7 @@ services:
     depends_on:
       - db
     environment:
+      - SEED
       - DATABASE_URL=postgresql://user:password@db:5432/mydatabase
   db:
     image: postgres:13

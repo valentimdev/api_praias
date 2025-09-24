@@ -1,7 +1,9 @@
+import os
 from fastapi import FastAPI
 from core.config import settings
 from api.v1 import routes_praia
 from db.session import Base, engine
+from seeds.praia import seed as praia_seed
 
 Base.metadata.create_all(bind=engine)
 
@@ -11,3 +13,8 @@ app = FastAPI(
 )
 
 app.include_router(routes_praia.router, prefix="/api/v1/praia", tags=["praias"])
+
+seed_flag = os.getenv("SEED", "False").lower() in ("1", "true", "yes")
+print(seed_flag)
+if seed_flag:
+    praia_seed()
