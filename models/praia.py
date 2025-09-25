@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Numeric, Boolean
+from sqlalchemy.orm import relationship
 from db.session import Base
 
 
@@ -14,6 +15,8 @@ class Praia(Base):
     comprimento = Column(Integer)
     largura = Column(Integer)
     propria_banho = Column(Boolean, default=True)
-    tem_quiosque = Column(Boolean, default=False)
     tem_salvavida = Column(Boolean, default=False)
     rating = Column(Numeric(2, 1))
+    quiosques = relationship(
+        "Quiosque", back_populates="praia", cascade="all, delete-orphan"
+    )

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.exc import IntegrityError
 from typing import List
 
@@ -20,15 +20,28 @@ def get_db():
 
 # GET GERAL
 @router.get("/", response_model=List[QuiosqueOut])
-def get_todos_os_quiosque(skip: int = 0, limit: int = 50, db: Session = Depends(get_db)):
-    quiosque = db.query(Quiosque).offset(skip).limit(limit).all()
+def get_todos_os_quiosque(
+    skip: int = 0, limit: int = 50, db: Session = Depends(get_db)
+):
+    quiosque = (
+        db.query(Quiosque)
+        .offset(skip)
+        .options(joinedload(Quiosque.praia))
+        .limit(limit)
+        .all()
+    )
     return quiosque
 
 
 # GET POR ID
 @router.get("/{quiosque_id}", response_model=QuiosqueOut)
 def get_quiosque_por_id(quiosque_id: int, db: Session = Depends(get_db)):
-    quiosque_encontrada = db.query(Quiosque).filter(Quiosque.id == quiosque_id).first()
+    quiosque_encontrada = (
+        db.query(Quiosque)
+        .filter(Quiosque.id == quiosque_id)
+        .options(joinedload(Quiosque.praia))
+        .first()
+    )
     if quiosque_encontrada is None:
         raise HTTPException(status_code=404, detail="Quiosque nao registrado")
     return quiosque_encontrada

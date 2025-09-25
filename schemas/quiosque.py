@@ -5,12 +5,14 @@ from typing import Optional
 class QuiosqueBase(BaseModel):
     nome: str
     descricao: Optional[str] = None
-    praia: Optional[float] = Field(None, ge=-90, le=90)
     nota: Optional[float] = Field(None, ge=-180, le=180)
+    latitude: float = Field(..., ge=-90, le=90)  # validação: -90 <= lat <= 90
+    longitude: float = Field(..., ge=-180, le=180)  # validação: -180 <= lon <= 180
     tem_acessibilidade: Optional[bool] = None
     tem_banheiro: Optional[bool] = None
     valor: Optional[int] = Field(None, ge=0, le=5)
     ocupacao_maxima: Optional[int] = None
+    praia_id: int
 
 
 class QuiosqueCreate(QuiosqueBase):
@@ -19,15 +21,30 @@ class QuiosqueCreate(QuiosqueBase):
 
 class QuiosqueUpdate(BaseModel):
     nome: Optional[str] = None
+    latitude: Optional[float] = Field(None, ge=-90, le=90)
+    longitude: Optional[float] = Field(None, ge=-180, le=180)
     descricao: Optional[str] = None
-    praia: Optional[float] = Field(None, ge=-90, le=90)
     nota: Optional[float] = Field(None, ge=-180, le=180)
     tem_acessibilidade: Optional[bool] = None
     tem_banheiro: Optional[bool] = None
     valor: Optional[int] = Field(None, ge=0, le=5)
     ocupacao_maxima: Optional[int] = None
+    praia_id: Optional[int] = None
+
+
+class QuiosqueInfo(QuiosqueBase):
+    id: int
+
+    class Config:
+        orm_mode = True
+
+
+from schemas.praia import PraiaInfo
 
 
 class QuiosqueOut(QuiosqueBase):
     id: int
-    model_config = ConfigDict(from_attributes=True)
+    praia: PraiaInfo
+
+    class Config:
+        orm_mode = True

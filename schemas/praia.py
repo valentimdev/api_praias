@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict, Field
-from typing import Optional
+from typing import Optional, List
 
 
 class PraiaBase(BaseModel):
@@ -11,7 +11,6 @@ class PraiaBase(BaseModel):
     comprimento: Optional[int] = None
     largura: Optional[int] = None
     propria_banho: Optional[bool] = True
-    tem_quiosque: Optional[bool] = False
     tem_salvavida: Optional[bool] = False
     rating: Optional[float] = Field(None, ge=0, le=5)  # rating 0–5
 
@@ -29,11 +28,19 @@ class PraiaUpdate(BaseModel):
     comprimento: Optional[int] = None
     largura: Optional[int] = None
     propria_banho: Optional[bool] = None
-    tem_quiosque: Optional[bool] = None
     tem_salvavida: Optional[bool] = None
     rating: Optional[float] = Field(None, ge=0, le=5)
+
+
+class PraiaInfo(PraiaBase):
+    id: int
+    model_config = ConfigDict(from_attributes=True)
+
+
+from schemas.quiosque import QuiosqueInfo
 
 
 class PraiaOut(PraiaBase):
     id: int
     model_config = ConfigDict(from_attributes=True)
+    quiosques: List[QuiosqueInfo] = []

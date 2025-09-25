@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 from sqlalchemy.exc import IntegrityError
 from typing import List
 
@@ -21,14 +21,25 @@ def get_db():
 # GET GERAL
 @router.get("/", response_model=List[PraiaOut])
 def get_todas_as_praias(skip: int = 0, limit: int = 50, db: Session = Depends(get_db)):
-    praias = db.query(Praia).offset(skip).limit(limit).all()
+    praias = (
+        db.query(Praia)
+        .offset(skip)
+        .options(selectinload(Praia.quiosques))
+        .limit(limit)
+        .all()
+    )
     return praias
 
 
 # GET POR ID
 @router.get("/{praia_id}", response_model=PraiaOut)
 def get_praia_por_id(praia_id: int, db: Session = Depends(get_db)):
-    praia_encontrada = db.query(Praia).filter(Praia.id == praia_id).first()
+    praia_encontrada = (
+        db.query(Praia)
+        .options(selectinload(Praia.quiosques))
+        .filter(Praia.id == praia_id)
+        .first()
+    )
     if praia_encontrada is None:
         raise HTTPException(status_code=404, detail="Praia nao registrada")
     return praia_encontrada
