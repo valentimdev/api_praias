@@ -31,7 +31,17 @@ class PraiaUpdate(BaseModel):
     tem_salvavida: Optional[bool] = None
     rating: Optional[float] = Field(None, ge=0, le=5)
 
-
+class PraiaPatch(BaseModel):
+    nome: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    estado: Optional[str] = None
+    municipio: Optional[str] = None
+    comprimento: Optional[int] = None
+    largura: Optional[int] = None
+    propria_banho: Optional[bool] = None
+    tem_salvavida: Optional[bool] = None
+    rating: Optional[float] = None
 class PraiaInfo(PraiaBase):
     id: int
     model_config = ConfigDict(from_attributes=True)
