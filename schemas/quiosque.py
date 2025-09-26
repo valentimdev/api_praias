@@ -31,6 +31,17 @@ class QuiosqueUpdate(BaseModel):
     ocupacao_maxima: Optional[int] = None
     praia_id: Optional[int] = None
 
+class QuiosquePatch(BaseModel):
+    nome: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    descricao: Optional[str] = None
+    nota: Optional[float] = None
+    tem_acessibilidade: Optional[bool] = None
+    tem_banheiro: Optional[bool] = None
+    valor: Optional[int] = None
+    ocupacao_maxima: Optional[int] = None
+    praia_id: Optional[int] = None
 
 class QuiosqueInfo(QuiosqueBase):
     id: int
