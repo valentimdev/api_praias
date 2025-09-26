@@ -1,12 +1,14 @@
 from models.quiosque import Quiosque
 from db.session import SessionLocal
 
+
 def get_db():
     db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
+
 
 def seed():
     db = next(get_db())
@@ -19,7 +21,7 @@ def seed():
             "nota": 4.5,
             "tem_acessibilidade": True,
             "tem_banheiro": True,
-            "valor": 50,
+            "valor": 5,
             "ocupacao_maxima": 100,
         },
         {
@@ -29,17 +31,17 @@ def seed():
             "nota": 4.2,
             "tem_acessibilidade": False,
             "tem_banheiro": True,
-            "valor": 40,
+            "valor": 3,
             "ocupacao_maxima": 80,
         },
         {
             "nome": "Quiosque Mar Azul",
             "descricao": "Quiosque rústico com vista para o mar",
-            "praia": 3,
+            "praia": 1,
             "nota": 5.0,
             "tem_acessibilidade": True,
             "tem_banheiro": False,
-            "valor": 60,
+            "valor": 2,
             "ocupacao_maxima": 50,
         },
     ]
@@ -52,3 +54,4 @@ def seed():
 
     db.commit()
     print("Seed concluído! Os quiosques foram inseridos.")
+
