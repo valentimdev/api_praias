@@ -137,12 +137,11 @@ def update_quiosque(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Quiosque com id {quiosque_id} não encontrado.",
         )
-    update_data = quiosque.model_dump(exclude_unset=True)
+    update_data = quiosque.model_dump()
     for key, value in update_data.items():
         setattr(quiosque_db, key, value)
 
     try:
-        db.add(quiosque_db)
         db.commit()
         db.refresh(quiosque_db)
         return quiosque_db

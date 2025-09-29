@@ -141,12 +141,11 @@ def update_praia(praia_id: int, praia: PraiaPatch, db: Session = Depends(get_db)
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Praia com id {praia_id} não encontrada.",
         )
-    update_data = praia.model_dump(exclude_unset=True)
+    update_data = praia.model_dump()
     for key, value in update_data.items():
         setattr(praia_db, key, value)
 
     try:
-        db.add(praia_db)
         db.commit()
         db.refresh(praia_db)
         return praia_db
