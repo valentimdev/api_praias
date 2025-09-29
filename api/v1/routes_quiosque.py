@@ -41,7 +41,7 @@ def get_todos_os_quiosques(
     municipio: Optional[str] = None,
     db: Session = Depends(get_db),
 ):
-    query = db.query(Quiosque).join(Quiosque.praia).options(joinedload(Quiosque.praia))
+    query = db.query(Quiosque).join(Praia).options(joinedload(Quiosque.praia))
 
     eq_filters = {
         "nome": nome,
@@ -85,7 +85,7 @@ def get_quiosque_por_id(quiosque_id: int, db: Session = Depends(get_db)):
     quiosque_encontrada = (
         db.query(Quiosque)
         .filter(Quiosque.id == quiosque_id)
-        .options(joinedload(Quiosque.quiosque))
+        .options(joinedload(Quiosque.praia))
         .first()
     )
     if quiosque_encontrada is None:
@@ -115,15 +115,15 @@ def create_quiosque(quiosque: QuiosqueCreate, db: Session = Depends(get_db)):
 def delete_quiosque(quiosque_id: int, db: Session = Depends(get_db)):
     quiosque_encontrado = (
         db.query(Quiosque)
-        .options(joinedload(Quiosque.quiosques))
+        .options(joinedload(Quiosque.praia))
         .filter(Quiosque.id == quiosque_id)
         .first()
     )
     if quiosque_encontrado is None:
-        raise HTTPException(status_code=404, detail="Quiosque nao registrada")
+        raise HTTPException(status_code=404, detail="Quiosque nao registrado")
     db.delete(quiosque_encontrado)
     db.commit()
-    return {"message": "Quiosque deletado com sucesso!"}
+    return
 
 
 # PUT
@@ -189,4 +189,3 @@ def partial_update_quiosque(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Erro ao atualizar o quiosque. O nome pode já estar em uso por outro quiosque.",
         )
-
