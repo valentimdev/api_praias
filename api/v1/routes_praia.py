@@ -5,7 +5,7 @@ from typing import List, Optional
 
 from db.session import SessionLocal
 from models.praia import Praia
-from schemas.praia import PraiaCreate, PraiaUpdate, PraiaOut, PraiaPatch
+from schemas.praia import PraiaCreate, PraiaOut, PraiaPatch
 from models.quiosque import Quiosque
 
 router = APIRouter()
@@ -134,7 +134,7 @@ def delete_praia(praia_id: int, db: Session = Depends(get_db)):
 
 # PUT
 @router.put("/{praia_id}", response_model=PraiaOut)
-def update_praia(praia_id: int, praia: PraiaUpdate, db: Session = Depends(get_db)):
+def update_praia(praia_id: int, praia: PraiaPatch, db: Session = Depends(get_db)):
     praia_db = db.query(Praia).filter(Praia.id == praia_id).first()
     if not praia_db:
         raise HTTPException(
@@ -193,4 +193,3 @@ def partial_update_praia(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Erro ao atualizar a praia. O nome pode já estar em uso por outra praia.",
         )
-
