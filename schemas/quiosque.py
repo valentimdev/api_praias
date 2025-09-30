@@ -1,5 +1,5 @@
-from pydantic import BaseModel, ConfigDict, Field
-from typing import Optional
+from pydantic import BaseModel, Field
+from typing import Optional, List
 
 
 class QuiosqueBase(BaseModel):
@@ -61,3 +61,7 @@ class QuiosqueOut(QuiosqueBase):
 
     class Config:
         orm_mode = True
+
+
+class QuiosqueList(BaseModel):
+    quiosques: List[QuiosqueOut] = []

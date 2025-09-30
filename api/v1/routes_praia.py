@@ -5,7 +5,7 @@ from typing import List, Optional
 
 from db.session import SessionLocal
 from models.praia import Praia
-from schemas.praia import PraiaCreate, PraiaOut, PraiaPatch
+from schemas.praia import PraiaCreate, PraiaOut, PraiaPatch, PraiaList
 from models.quiosque import Quiosque
 
 router = APIRouter()
@@ -20,7 +20,7 @@ def get_db():
 
 
 # GET GERAL
-@router.get("/", response_model=List[PraiaOut])
+@router.get("/", response_model=PraiaList)
 def get_todas_as_praias(
     skip: int = 0,
     limit: int = 50,
@@ -82,7 +82,7 @@ def get_todas_as_praias(
         query = query.filter(Praia.quiosques.any(Quiosque.id == quiosque))
 
     praias = query.offset(skip).limit(limit).all()
-    return praias
+    return {"praias": praias}
 
 
 # GET POR ID

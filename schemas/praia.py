@@ -75,3 +75,7 @@ class PraiaOut(PraiaBase):
     id: int
     model_config = ConfigDict(from_attributes=True)
     quiosques: List[QuiosqueInfo] = []
+
+
+class PraiaList(BaseModel):
+    praias: List[PraiaOut] = []

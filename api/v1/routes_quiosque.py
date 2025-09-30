@@ -5,7 +5,13 @@ from typing import List, Optional
 
 from db.session import SessionLocal
 from models.quiosque import Quiosque
-from schemas.quiosque import QuiosqueCreate, QuiosqueUpdate, QuiosqueOut, QuiosquePatch
+from schemas.quiosque import (
+    QuiosqueCreate,
+    QuiosqueUpdate,
+    QuiosqueOut,
+    QuiosquePatch,
+    QuiosqueList,
+)
 from models.praia import Praia
 
 
@@ -21,7 +27,7 @@ def get_db():
 
 
 # GET GERAL
-@router.get("/", response_model=List[QuiosqueOut])
+@router.get("/", response_model=QuiosqueList)
 def get_todos_os_quiosques(
     skip: int = 0,
     limit: int = 50,
@@ -76,7 +82,7 @@ def get_todos_os_quiosques(
         query = query.filter(Praia.municipio == municipio)
 
     quiosques = query.offset(skip).limit(limit).all()
-    return quiosques
+    return {"quiosques": quiosques}
 
 
 # GET POR ID
