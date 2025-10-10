@@ -3,6 +3,10 @@ from sqlalchemy.orm import Session, selectinload
 from sqlalchemy.exc import IntegrityError
 from typing import List, Optional
 
+from auth.deps import get_current_user
+from models.user import User
+
+
 from db.session import SessionLocal
 from models.praia import Praia
 from schemas.praia import PraiaCreate, PraiaOut, PraiaPatch, PraiaList
@@ -101,7 +105,11 @@ def get_praia_por_id(praia_id: int, db: Session = Depends(get_db)):
 
 # POST
 @router.post("/", response_model=PraiaOut, status_code=status.HTTP_201_CREATED)
-def create_praia(praia: PraiaCreate, db: Session = Depends(get_db)):
+def create_praia(
+    praia: PraiaCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
     try:
         db_praia = Praia(**praia.model_dump())
         db.add(db_praia)
@@ -118,7 +126,11 @@ def create_praia(praia: PraiaCreate, db: Session = Depends(get_db)):
 
 # DELETE
 @router.delete("/{praia_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_praia(praia_id: int, db: Session = Depends(get_db)):
+def delete_praia(
+    praia_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
     praia_encontrada = (
         db.query(Praia)
         .options(selectinload(Praia.quiosques))
@@ -134,7 +146,12 @@ def delete_praia(praia_id: int, db: Session = Depends(get_db)):
 
 # PUT
 @router.put("/{praia_id}", response_model=PraiaOut)
-def update_praia(praia_id: int, praia: PraiaPatch, db: Session = Depends(get_db)):
+def update_praia(
+    praia_id: int,
+    praia: PraiaPatch,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
     praia_db = db.query(Praia).filter(Praia.id == praia_id).first()
     if not praia_db:
         raise HTTPException(
@@ -160,7 +177,10 @@ def update_praia(praia_id: int, praia: PraiaPatch, db: Session = Depends(get_db)
 # PATCH
 @router.patch("/{praia_id}", response_model=PraiaOut)
 def partial_update_praia(
-    praia_id: int, praia: PraiaPatch, db: Session = Depends(get_db)
+    praia_id: int,
+    praia: PraiaPatch,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     praia_db = db.query(Praia).filter(Praia.id == praia_id).first()
 
