@@ -18,7 +18,7 @@ app.include_router(routes_praia.router, prefix="/api/v1/praia", tags=["praias"])
 app.include_router(
     routes_quiosque.router, prefix="/api/v1/quiosque", tags=["quiosques"]
 )
-app.include_router(routes_user.router, prefix="/api/v1/user", tags=["users"])
+app.include_router(routes_user.router, prefix="/user", tags=["users"])
 
 seed_flag = os.getenv("SEED", "False").lower() in ("1", "true", "yes")
 print(seed_flag)
