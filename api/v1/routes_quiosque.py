@@ -2,6 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.exc import IntegrityError
 from typing import List, Optional
+from auth.deps import get_current_user
+from models.user import User
 
 from db.session import SessionLocal
 from models.quiosque import Quiosque
@@ -101,7 +103,11 @@ def get_quiosque_por_id(quiosque_id: int, db: Session = Depends(get_db)):
 
 # POST
 @router.post("/", response_model=QuiosqueOut, status_code=status.HTTP_201_CREATED)
-def create_quiosque(quiosque: QuiosqueCreate, db: Session = Depends(get_db)):
+def create_quiosque(
+    quiosque: QuiosqueCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
     try:
         db_quiosque = Quiosque(**quiosque.model_dump())
         db.add(db_quiosque)
@@ -118,7 +124,11 @@ def create_quiosque(quiosque: QuiosqueCreate, db: Session = Depends(get_db)):
 
 # DELETE
 @router.delete("/{quiosque_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_quiosque(quiosque_id: int, db: Session = Depends(get_db)):
+def delete_quiosque(
+    quiosque_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
     quiosque_encontrado = (
         db.query(Quiosque)
         .options(joinedload(Quiosque.praia))
@@ -135,7 +145,10 @@ def delete_quiosque(quiosque_id: int, db: Session = Depends(get_db)):
 # PUT
 @router.put("/{quiosque_id}", response_model=QuiosqueOut)
 def update_quiosque(
-    quiosque_id: int, quiosque: QuiosqueUpdate, db: Session = Depends(get_db)
+    quiosque_id: int,
+    quiosque: QuiosqueUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     quiosque_db = db.query(Quiosque).filter(Quiosque.id == quiosque_id).first()
     if not quiosque_db:
@@ -162,7 +175,10 @@ def update_quiosque(
 # PATCH
 @router.patch("/{quiosque_id}", response_model=QuiosqueOut)
 def partial_update_quiosque(
-    quiosque_id: int, quiosque: QuiosquePatch, db: Session = Depends(get_db)
+    quiosque_id: int,
+    quiosque: QuiosquePatch,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     quiosque_db = db.query(Quiosque).filter(Quiosque.id == quiosque_id).first()
 
